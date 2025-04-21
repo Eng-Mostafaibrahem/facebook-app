@@ -15,10 +15,10 @@ export const createPost = async (req, res) => {
 //all posts of  specefic user
 export const getAllUserPosts = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params; //userId
     const posts = await Post.findAll({
       where: { UserId: id },
-      attributes: ["content", "title"],
+      attributes: ["content", "title", "id"],
       include: {
         model: User,
         attributes: ["name", "email"],
@@ -38,15 +38,18 @@ export const getAllUserPosts = async (req, res) => {
 
 // specefic post
 export const getPost = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params; //userId
+  const { postId } = req.query; //postId
+
   const post = await Post.findOne({
-    where: { id },
-    attributes: ["title", "content"],
+    where: { UserId: id, id: postId },
+    attributes: ["title", "content", "id"],
     include: {
       model: User,
       attributes: ["email", "name"],
     },
   });
+
   if (!post) return res.status(404).json({ message: "post not found" });
   return res.status(200).json({ message: "post is", data: post });
 };
@@ -54,8 +57,12 @@ export const getPost = async (req, res) => {
 export const updatePost = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const { postId } = req.query;
     const { title, content } = req.body;
-    const post = await Post.update({ title, content }, { where: { id } });
+    const post = await Post.update(
+      { title, content },
+      { where: { UserId: id, id: postId } }
+    );
     if (!post[0]) return res.status(404).json({ message: "post not found" });
     return res.status(200).json({ message: "post updated" });
   } catch (error) {
@@ -65,7 +72,8 @@ export const updatePost = async (req, res, next) => {
 
 export const deletePost = async (req, res) => {
   const { id } = req.params;
-  const post = await Post.destroy({ where: { id } });
+  const { postId } = req.query;
+  const post = await Post.destroy({ where: { UserId: id, id: postId } });
   if (!post) return res.status(404).json({ message: "post not found" });
   return res.status(200).json({ message: "post deleted" });
 };

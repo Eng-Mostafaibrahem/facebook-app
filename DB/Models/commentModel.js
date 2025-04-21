@@ -1,9 +1,9 @@
 import { DataTypes } from "sequelize";
-import { sequalizeInstance } from "../dbConnection.js";
+import { sequelize } from "../dbConnection.js";
 import User from "./userModel.js";
 import Post from "./postModel.js";
 
-const Comment = sequalizeInstance.define(
+const Comment = sequelize.define(
   "Comment",
   {
     id: {

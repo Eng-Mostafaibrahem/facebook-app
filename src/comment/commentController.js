@@ -12,10 +12,7 @@ export const createComment = async (req, res) => {
       PostId,
       UserId: id,
     });
-    console.log(id);
-    return res
-      .status(200)
-      .json({ message: "comment created successfully"});
+    return res.status(200).json({ message: "comment created successfully" });
   } catch (error) {
     return res.json({
       message: "error creating comment",
@@ -45,7 +42,6 @@ export const getComment = async (req, res) => {
     res
       .status(500)
       .json({ message: "internal server error", error: error.message });
-    // console.log();
   }
 };
 
@@ -56,9 +52,7 @@ export const updateComment = async (req, res) => {
     const updatedComment = await Comment.update({ comment }, { where: { id } });
     if (!updatedComment[0])
       return res.status(404).json({ message: "Comment not found" });
-    return res
-      .status(200)
-      .json({ message: "comment updated"});
+    return res.status(200).json({ message: "comment updated" });
   } catch (error) {
     res
       .status(500)
@@ -67,15 +61,15 @@ export const updateComment = async (req, res) => {
 };
 
 export const deleteComment = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const deletedComment = await Comment.destroy({ where: { id } });
-      if (!deletedComment)
-        return res.status(404).json({ message: "Comment not found" });
-      return res.status(200).json({ message: "comment deleted" });
-    } catch (error) {
-      res
-       .status(500)
-       .json({ message: "internal server error", error: error.message });
-    }
-  };
+  try {
+    const { id } = req.params;
+    const deletedComment = await Comment.destroy({ where: { id } });
+    if (!deletedComment)
+      return res.status(404).json({ message: "Comment not found" });
+    return res.status(200).json({ message: "comment deleted" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "internal server error", error: error.message });
+  }
+};

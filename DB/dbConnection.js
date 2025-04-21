@@ -1,19 +1,30 @@
 import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
+import mysql2 from "mysql2";
 
-export const sequalizeInstance= new Sequelize("bjdsg3ta50hegcqspb0y","u4qtbb0rpykao8iz","0s2xvgwymYIDlnrRcLzB",{
-    host:"bjdsg3ta50hegcqspb0y-mysql.services.clever-cloud.com",
-    dialect:"mysql"
-});
+dotenv.config();
 
-export const testConnection=async()=>{
+export const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    dialect: process.env.DB_DIALECT,
+    dialectModule: mysql2,
+    logging: false,
+  }
+);
 
-    try{
-      await sequalizeInstance.sync({alter:true});
-      console.log("Connection successful");
-    }catch(error){
-        console.log({message:"connection failed",error:error.message});
-    }
-    
+export const connectDB = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("✅ Database connected successfully.");
 
-}
-
+    await sequelize.sync({ alter: true });
+    console.log("✅ Tables synced successfully.");
+  } catch (error) {
+    console.error("❌ Unable to connect to the database:", error.message);
+  }
+};
